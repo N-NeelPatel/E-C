@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Product
 # from .products import products
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, UserSerializer
 
 # Create your views here.
 
@@ -40,6 +40,12 @@ def getRoutes(request):
     ]
 
     return Response(routes)
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user # get user based on token info
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def getProducts(request):
