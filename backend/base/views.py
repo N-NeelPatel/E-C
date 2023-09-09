@@ -181,6 +181,19 @@ def deleteProduct(request, pk):
     return Response({'Product Deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['DELETE'])
+def uploadImage(request):
+    data = request.data
+
+    product_id = data['product_id']
+    product = Product.objects.get(_id=product_id)
+
+    product.image = request.FILES.get('image')
+    product.save()
+     
+    return Response({'Image was uploaded'}, status=status.HTTP_204_NO_CONTENT)
+
+
 # Order views
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
