@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import Token
@@ -129,8 +130,26 @@ def getProducts(request):
         query = ''
 
     products = Product.objects.filter(name__icontains=query) # i means that it is case insensitive
+
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 2) # number of items to have
+
+
+    try: 
+        products = paginator.page(page)
+    except PageNotAnInteger: # default state case, where no pagination is used. In those case return 1st page
+        products = paginator.page(1)
+    except EmptyPage: # case where we have an empty page. Ex. there are only items for 5 pages, but if 15 is passed then this case is used. In that case, return last page
+        products = paginator.page(paginator.num_pages) 
+
+    # handling error, in case page is none send in the first 
+    if page == None:
+        page = 1
+
+    page = int(page)
+        
     serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    return Response({'products': serializer.data, 'page': page, 'pages': paginator.num_pages})
 
 
 @api_view(['GET'])
