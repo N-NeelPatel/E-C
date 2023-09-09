@@ -290,3 +290,16 @@ def updateOrderToPaid(request, pk):
     order.save()
 
     return Response('Order was paid', status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateOrderToDelivered(request, pk): 
+    order = Order.objects.get(_id=pk)
+
+    order.isDelivered = True
+    order.deliveredAt = datetime.now()
+    order.save()
+
+    return Response('Order was delivered', status=status.HTTP_204_NO_CONTENT)
+
