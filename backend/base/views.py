@@ -124,7 +124,11 @@ def deleteUser(request, pk):
 
 @api_view(['GET'])
 def getProducts(request):
-    products = Product.objects.all()
+    query = request.query_params.get('keyword')
+    if query == None:
+        query = ''
+
+    products = Product.objects.filter(name__icontains=query) # i means that it is case insensitive
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
