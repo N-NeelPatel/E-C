@@ -108,7 +108,7 @@ def updateUser(request, pk):
     user.is_staff = data['isAdmin']
 
     user.save()
-    
+
     serializer = UserSerializer(user, many=False)
 
     return Response(serializer.data)
@@ -134,6 +134,14 @@ def getProduct(request, pk):
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
+
+    
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response({'Product Deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
 # Order views

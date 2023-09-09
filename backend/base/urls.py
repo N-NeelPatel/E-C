@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('products/', views.getProducts, name="products"),
     path('products/<str:pk>/', views.getProduct, name="product"),
+    path('products/delete/<str:pk>/', views.deleteProduct, name="delete-product"),
 
     path('orders/add/', views.addOrderItems, name='orders-add'),
     path('orders/myorders/', views.getMyOrders, name='my-orders'), # this should be above the variable path
