@@ -9,7 +9,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Product, Order, OrderItem, ShippingAddress
+from .models import Product, Order, OrderItem, ShippingAddress, Review
 # from .products import products
 from .serializers import ProductSerializer, UserSerializer, UserSerializerWithToken, OrderSerializer
 
@@ -192,6 +192,48 @@ def uploadImage(request):
     product.save()
      
     return Response({'Image was uploaded'}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request, pk):
+    user = request.user
+    product = Product.objects.get(_id=pk)
+    data = request.data
+
+    # 1. Review already exists
+    alreadyExists = product.review_set.filter(user=user).exists() # returns true or false value
+
+    if alreadyExists:
+        content = {'details': 'Product already reviewed'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 2. No rating or 0
+    elif data['rating'] == 0:
+        content = {'details': 'Please select a rating'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 3. Create review
+    else:
+        review = Review.objects.create(
+            user=user,
+            product=product,
+            name=user.first_name,
+            rating=data['rating'],
+            comment=data['comment']
+        )
+
+        reviews = product.review_set.all() # get all reviews to be used to find the number of reviews
+        product.numReviews = len(reviews) # update number of reviews for product
+
+        total = 0
+        for review in reviews:
+            total += review.rating 
+        
+        product.rating = total / len(reviews)
+        product.save()
+        
+        return Response({'detail': 'Review Added'}, status=status.HTTP_200_OK)
 
 
 # Order views
