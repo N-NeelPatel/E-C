@@ -55,7 +55,7 @@ def registerUser(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserProfile(request):
-    user = request.user # get user based on token info
+    user = request.user # this is a loggedin user | get user based on token info
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
 
@@ -63,7 +63,7 @@ def getUserProfile(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
-    user = request.user # get user based on token info
+    user = request.user # this is a logged in user | get user based on token info
     serializer = UserSerializerWithToken(user, many=False)
     
     data = request.data
@@ -85,6 +85,14 @@ def getUsers(request):
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteUser(request, pk):
+    userForDeletion = User.objects.get(id=pk)
+    userForDeletion.delete()
+    return Response('User was deleted', status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
