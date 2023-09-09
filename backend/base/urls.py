@@ -20,6 +20,7 @@ urlpatterns = [
     path('products/update/<str:pk>/', views.updateProduct, name="update-product"),
     path('products/delete/<str:pk>/', views.deleteProduct, name="delete-product"),
 
+    path('orders/', views.getOrders, name='all-orders'),
     path('orders/add/', views.addOrderItems, name='orders-add'),
     path('orders/myorders/', views.getMyOrders, name='my-orders'), # this should be above the variable path
     path('orders/<str:pk>/', views.getOrderById, name='user-order'),
