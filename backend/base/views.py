@@ -179,4 +179,4 @@ def updateOrderToPaid(request, pk):
     order.paidAt = datetime.now()
     order.save()
 
-    return Response('Order was paid')
+    return Response('Order was paid', status=status.HTTP_204_NO_CONTENT)
