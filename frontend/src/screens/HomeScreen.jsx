@@ -12,7 +12,7 @@ export default function HomeScreen() {
 
     //     const fetchProducts = async() => {
     //         try {
-    //             const { data } = await axios.get('http://127.0.0.1:8000/api/products/')
+    //             const { data } = await axios.get('/api/products/');
     //             console.log('data', data);
     //             setProducts(data);
     //         } catch(e) {
