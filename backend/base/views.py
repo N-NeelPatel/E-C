@@ -375,3 +375,18 @@ def updateOrderToDelivered(request, pk):
 
     return Response('Order was delivered', status=status.HTTP_204_NO_CONTENT)
 
+
+# class BookList(APIView):
+#     def get(self, request):
+#         title = request.query_params.get('title', None)
+#         author = request.query_params.get('author', None)
+
+#         # Filter books based on query parameters
+#         queryset = Book.objects.all()
+#         if title:
+#             queryset = queryset.filter(title__icontains=title)
+#         if author:
+#             queryset = queryset.filter(author__icontains=author)
+
+#         serializer = BookSerializer(queryset, many=True)
+#         return Response(serializer.data)
